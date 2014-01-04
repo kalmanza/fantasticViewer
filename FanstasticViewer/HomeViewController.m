@@ -75,8 +75,13 @@
     NSMutableDictionary *marvelDict = manger.marvelDict;
     char selectedChar = 'A' + indexPath.row;
     NSString *selectedCharString = [NSString stringWithFormat:@"%c",selectedChar];
-    [lgvc setDataSource:[marvelDict objectForKey:selectedCharString]];
-    [self presentViewController:lgvc animated:YES completion:nil];
+    NSMutableDictionary *letter_hero = [marvelDict objectForKey:selectedCharString];
+    NSMutableArray *heroKeys = letter_hero.allKeys.mutableCopy;
+    [heroKeys sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return [obj1 compare:obj2];
+    }];
+    [lgvc setDataSource:heroKeys];
+    [self.navigationController pushViewController:lgvc animated:YES];
 }
 
 @end

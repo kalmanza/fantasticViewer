@@ -63,8 +63,7 @@
     }
     
     NSDictionary *entry = [self.dataSource objectAtIndex:indexPath.row];
-    [cell.textLabel setText:[entry objectForKey:@"name"]];
-    [cell.detailTextLabel setText:[entry objectForKey:@"details"]];
+    [cell.textLabel setText:entry];
     
     return cell;
 }

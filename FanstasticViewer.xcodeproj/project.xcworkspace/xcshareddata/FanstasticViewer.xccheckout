@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>CAAD1A85-7A1C-4332-8425-A78426215BD9</string>
+	<key>IDESourceControlProjectName</key>
+	<string>FanstasticViewer</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D4178230-7A82-45DD-AA22-F1D48F2C7EEC</key>
+		<string>https://github.com/kalmanza/fantasticViewer.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>FanstasticViewer.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D4178230-7A82-45DD-AA22-F1D48F2C7EEC</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/kalmanza/fantasticViewer.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D4178230-7A82-45DD-AA22-F1D48F2C7EEC</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D4178230-7A82-45DD-AA22-F1D48F2C7EEC</string>
+			<key>IDESourceControlWCCName</key>
+			<string>fantasticViewer</string>
+		</dict>
+	</array>
+</dict>
+</plist>

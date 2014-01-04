@@ -65,16 +65,7 @@
         NSMutableDictionary *tokens = [[NSMutableDictionary alloc] init];
         for (NSDictionary *entry in [responseDict objectForKey:@"items"]) {
             tokens = [self parseEntry:entry];
-            NSString *heroName = tokens[@"name"];
-            if ([self.marvelDict objectForKey:[NSString stringWithFormat:@"%c",[heroName characterAtIndex:0]]])
-            {
-                NSMutableArray *letterArray = [self.marvelDict objectForKey:[NSString stringWithFormat:@"%c",[heroName characterAtIndex:0]]];
-                [letterArray addObject:tokens];
-            } else {
-                NSMutableArray *letterArry = [[NSMutableArray alloc] init];
-                [letterArry addObject:tokens];
-                [self.marvelDict setObject:letterArry forKey:[NSString stringWithFormat:@"%c",[heroName characterAtIndex:0]]];
-            }
+            [self addEntryToMarvelDict:tokens];
         }
       //  [self.dataSource addObjectsFromArray:[responseDict objectForKey:@"items"]];
         NSString *newOffset = [responseDict objectForKey:@"offset"];
@@ -89,8 +80,8 @@
 {
     NSString *title = [entry objectForKey:@"title"];
     NSRange range;
-    NSString *heroName = @" ";
-    NSString *heroDetails = @" ";
+    NSString *heroName = @"";
+    NSString *heroDetails = @"";
     NSString *stringURL = @"none";
     
     range = [title rangeOfString:@"("];
@@ -105,6 +96,38 @@
     NSMutableDictionary *tokens = @{@"name": heroName, @"details": heroDetails, @"url": stringURL}.mutableCopy;
     
     return tokens;
+}
+
+- (void)addEntryToMarvelDict:(NSMutableDictionary *)tokens
+{
+    NSString *heroName = tokens[@"name"];
+    NSString *heroDetails = tokens[@"details"];
+    NSString *heroURL = tokens[@"url"];
+    NSDictionary *details_url = @{heroDetails:heroURL};
+    NSMutableArray *heroNameArray;
+    NSMutableDictionary *letterValue = [self.marvelDict objectForKey:[NSString stringWithFormat:@"%c",[heroName characterAtIndex:0]]];
+    if (!letterValue) {
+        [self.marvelDict setObject:[[NSMutableDictionary alloc] init] forKey:[NSString stringWithFormat:@"%c",[heroName characterAtIndex:0]]];
+        letterValue = [self.marvelDict objectForKey:[NSString stringWithFormat:@"%c",[heroName characterAtIndex:0]]];
+        heroNameArray = [letterValue objectForKey:heroName];
+        if (!heroNameArray) {
+            [letterValue setObject:[[NSMutableArray alloc]init] forKey:heroName];
+            heroNameArray = [letterValue objectForKey:heroName];
+            [heroNameArray addObject:details_url];
+        }
+
+    } else {
+        heroNameArray = [letterValue objectForKey:heroName];
+        if (!heroNameArray) {
+            [letterValue setObject:[[NSMutableArray alloc]init] forKey:heroName];
+            heroNameArray = [letterValue objectForKey:heroName];
+            [heroNameArray addObject:details_url];
+        } else {
+            [heroNameArray addObject:details_url];
+        }
+
+    }
+    
 }
 
 @end
