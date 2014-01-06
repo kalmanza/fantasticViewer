@@ -1,20 +1,20 @@
 //
-//  LetterGroupViewController.m
+//  HeroSubcatViewController.m
 //  FanstasticViewer
 //
-//  Created by Kevin Almanza on 1/3/14.
+//  Created by Kevin Almanza on 1/6/14.
 //  Copyright (c) 2014 Kevin Almanza. All rights reserved.
 //
 
-#import "LetterGroupViewController.h"
 #import "HeroSubcatViewController.h"
 #import "DataManager.h"
 
-@interface LetterGroupViewController ()
+@interface HeroSubcatViewController ()
+
 
 @end
 
-@implementation LetterGroupViewController
+@implementation HeroSubcatViewController
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -53,7 +53,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return self.dataSource.count;
+    return [self.dataSource count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -61,11 +61,11 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    NSString *entry = [self.dataSource objectAtIndex:indexPath.row];
-    [cell.textLabel setText:entry];
+    NSDictionary *subcat = self.dataSource[indexPath.row];
+    [cell.textLabel setText:subcat.allKeys.lastObject];
     
     return cell;
 }
@@ -117,17 +117,18 @@
 {
     // Navigation logic may go here, for example:
     // Create the next view controller.
-    HeroSubcatViewController *detailViewController = [[HeroSubcatViewController alloc] init];
-    NSString *name = [self.dataSource objectAtIndex:indexPath.row];
-    NSDictionary *heros = [[[DataManager sharedManager] marvelDict] objectForKey:[NSString stringWithFormat:@"%c",[name characterAtIndex:0]]];
-    NSArray *subcategories = [heros objectForKey:name];
-    [detailViewController setDataSource:subcategories];
-    [detailViewController setTitle:name];
-    
+    UIViewController *webVC = [[UIViewController alloc] init];
+    UIWebView *webview = [[UIWebView alloc] initWithFrame:webVC.view.bounds];
+    NSDictionary *detail_url = [self.dataSource objectAtIndex:indexPath.row];
+    NSString *chosenURL = detail_url.allValues.lastObject;
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",baseURL,chosenURL]];
+    NSURLRequest *heroRequest = [NSURLRequest requestWithURL:url];
+    [webview loadRequest:heroRequest];
+    [webVC.view addSubview:webview];
     // Pass the selected object to the new view controller.
     
     // Push the view controller.
-    [self.navigationController pushViewController:detailViewController animated:YES];
+    [self.navigationController pushViewController:webVC animated:YES];
 }
 
 

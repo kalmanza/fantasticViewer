@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define baseURL @"http://marvel.wikia.com"
+
 @interface DataManager : NSObject
 
 @property(nonatomic, strong) NSMutableDictionary *marvelDict;

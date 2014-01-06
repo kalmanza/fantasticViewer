@@ -58,7 +58,7 @@
         }
         NSError *jsonError;
         NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-    //    NSLog(@"%@", responseDict);
+        NSLog(@"%@", responseDict);
         if ([responseDict objectForKey:@"exception"]) {
             return;
         }

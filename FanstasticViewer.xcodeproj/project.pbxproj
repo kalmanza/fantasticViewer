@@ -24,6 +24,8 @@
 		B39297391876A3C80039AB11 /* LetterGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B39297371876A3C80039AB11 /* LetterGroupViewController.m */; };
 		B392973A1876A3C80039AB11 /* LetterGroupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B39297381876A3C80039AB11 /* LetterGroupViewController.xib */; };
 		B392973D18776C440039AB11 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B392973C18776C440039AB11 /* DataManager.m */; };
+		B3A28901187A89D4006C5C06 /* HeroSubcatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A288FF187A89D4006C5C06 /* HeroSubcatViewController.m */; };
+		B3A28902187A89D4006C5C06 /* HeroSubcatViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3A28900187A89D4006C5C06 /* HeroSubcatViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +63,9 @@
 		B39297381876A3C80039AB11 /* LetterGroupViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LetterGroupViewController.xib; sourceTree = "<group>"; };
 		B392973B18776C440039AB11 /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
 		B392973C18776C440039AB11 /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
+		B3A288FE187A89D4006C5C06 /* HeroSubcatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeroSubcatViewController.h; sourceTree = "<group>"; };
+		B3A288FF187A89D4006C5C06 /* HeroSubcatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeroSubcatViewController.m; sourceTree = "<group>"; };
+		B3A28900187A89D4006C5C06 /* HeroSubcatViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeroSubcatViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +137,9 @@
 				B39297381876A3C80039AB11 /* LetterGroupViewController.xib */,
 				B392973B18776C440039AB11 /* DataManager.h */,
 				B392973C18776C440039AB11 /* DataManager.m */,
+				B3A288FE187A89D4006C5C06 /* HeroSubcatViewController.h */,
+				B3A288FF187A89D4006C5C06 /* HeroSubcatViewController.m */,
+				B3A28900187A89D4006C5C06 /* HeroSubcatViewController.xib */,
 			);
 			path = FanstasticViewer;
 			sourceTree = "<group>";
@@ -242,6 +250,7 @@
 			files = (
 				B3929708187684480039AB11 /* InfoPlist.strings in Resources */,
 				B3929710187684480039AB11 /* Images.xcassets in Resources */,
+				B3A28902187A89D4006C5C06 /* HeroSubcatViewController.xib in Resources */,
 				B392973A1876A3C80039AB11 /* LetterGroupViewController.xib in Resources */,
 				B3929730187684790039AB11 /* HomeViewController.xib in Resources */,
 			);
@@ -264,6 +273,7 @@
 			files = (
 				B392970E187684480039AB11 /* AppDelegate.m in Sources */,
 				B392973D18776C440039AB11 /* DataManager.m in Sources */,
+				B3A28901187A89D4006C5C06 /* HeroSubcatViewController.m in Sources */,
 				B392970A187684480039AB11 /* main.m in Sources */,
 				B39297391876A3C80039AB11 /* LetterGroupViewController.m in Sources */,
 				B392972F187684790039AB11 /* HomeViewController.m in Sources */,
@@ -467,6 +477,7 @@
 				B3929728187684480039AB11 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B3929729187684480039AB11 /* Build configuration list for PBXNativeTarget "FanstasticViewerTests" */ = {
 			isa = XCConfigurationList;
@@ -475,6 +486,7 @@
 				B392972B187684480039AB11 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
