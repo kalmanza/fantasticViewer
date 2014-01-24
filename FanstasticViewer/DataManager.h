@@ -16,5 +16,6 @@
 
 + (DataManager *)sharedManager;
 - (void)fetchDataFromWiki;
+- (void)saveData;
 
 @end

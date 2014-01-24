@@ -8,11 +8,14 @@
 
 #import "AppDelegate.h"
 #import "HomeViewController.h"
+#import "DataManager.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSMutableDictionary *startup = [[DataManager sharedManager] marvelDict];
+    startup = nil;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     HomeViewController *hvc = [[HomeViewController alloc] init];
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:hvc];

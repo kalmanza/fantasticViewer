@@ -37,8 +37,18 @@
 
 - (NSMutableDictionary *)marvelDict
 {
+    NSArray *urls = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
+    if (!urls) {
+        NSLog(@"no url directory on load");
+    }
+    NSURL *docsDirectory = [urls lastObject];
+    NSURL *marvelDictURL = [docsDirectory URLByAppendingPathComponent:@"marvelDict.archive"];
     if (!_marvelDict) {
-        _marvelDict = [[NSMutableDictionary alloc] init];
+        _marvelDict = [NSKeyedUnarchiver unarchiveObjectWithFile:marvelDictURL.path];
+        if (!_marvelDict) {
+            _marvelDict = [[NSMutableDictionary alloc] init];
+            [self fetchDataFromWiki];
+        }
     }
     return _marvelDict;
 }
@@ -47,18 +57,21 @@
 {
    // [self parseEntry:@{@"title":@"toast (something else here) (earth-616)"}];
     static NSString *offset = @"0";
-    NSString *apiurl = [NSString stringWithFormat:@"http://marvel.wikia.com/api/v1/Articles/List?expand=1&category=characters&limit=10000&offset=%@",offset];
+    static BOOL finishedDownload = NO;
+    finishedDownload = NO;
+    NSString *apiurl = [NSString stringWithFormat:@"http://marvel.wikia.com/api/v1/Articles/List?expand=1&category=characters&limit=8000&offset=%@",offset];
     apiurl = [apiurl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURLSessionConfiguration *ephemeralConfig = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     NSURLSession *emphemeralSession = [NSURLSession sessionWithConfiguration:ephemeralConfig];
     [[emphemeralSession dataTaskWithURL:[NSURL URLWithString:apiurl] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSLog(@"got response:\n\t%@\n", response);
         if (!response) {
+            [self saveData];
             return;
         }
         NSError *jsonError;
         NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-        NSLog(@"%@", responseDict);
+      //  NSLog(@"%@", responseDict);
         if ([responseDict objectForKey:@"exception"]) {
             return;
         }
@@ -67,10 +80,14 @@
             tokens = [self parseEntry:entry];
             [self addEntryToMarvelDict:tokens];
         }
-      //  [self.dataSource addObjectsFromArray:[responseDict objectForKey:@"items"]];
         NSString *newOffset = [responseDict objectForKey:@"offset"];
         offset = newOffset;
-        NSLog(@"%@",newOffset);
+        NSLog(@"New Offset:%@",newOffset);
+        if (offset == nil) {
+            [self saveData];
+            finishedDownload = YES;
+            return;
+        }
         [self fetchDataFromWiki];
         
     }] resume];
@@ -127,6 +144,18 @@
         }
 
     }
+    
+}
+
+- (void)saveData
+{
+    NSArray *urls = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
+    if (!urls) {
+        NSLog(@"no url directory on save");
+    }
+    NSURL *docsDirectory = [urls lastObject];
+    NSURL *marvelDictURL = [docsDirectory URLByAppendingPathComponent:@"marvelDict.archive"];
+    [NSKeyedArchiver archiveRootObject:self.marvelDict toFile:marvelDictURL.path];
     
 }
 

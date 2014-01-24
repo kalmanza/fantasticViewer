@@ -9,11 +9,14 @@
 #import "HomeViewController.h"
 #import "DataManager.h"
 #import "LetterGroupViewController.h"
+#import "HeroSubcatViewController.h"
 
-@interface HomeViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface HomeViewController () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
+@property(nonatomic, strong)NSMutableArray *dataSourceLetters;
 @property(nonatomic, strong)NSMutableArray *dataSource;
 @property(nonatomic, strong)IBOutlet UITableView *tvCharacters;
+@property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 
 @end
 
@@ -23,6 +26,11 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        _dataSource = self.dataSourceLetters;
+        [self setEdgesForExtendedLayout:UIRectEdgeNone];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShown:) name:UIKeyboardDidShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHidden:) name:UIKeyboardWillHideNotification object:nil];
+        [self setTitle:@"MARVEL DICTIONARY"];
     }
     return self;
 }
@@ -30,20 +38,28 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.tvCharacters setDataSource:self];
-    [self.tvCharacters setDelegate:self];
-    [[DataManager sharedManager] fetchDataFromWiki];
 }
 
-- (NSMutableArray *)dataSource
+- (void)viewWillAppear:(BOOL)animated
 {
-    if (!_dataSource) {
-        _dataSource = [[NSMutableArray alloc] init];
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self searchBar:self.searchBar textDidChange:self.searchBar.text];
+}
+
+- (NSMutableArray *)dataSourceLetters
+{
+    if (!_dataSourceLetters) {
+        _dataSourceLetters = [[NSMutableArray alloc] init];
         for (char i = 'A'; i <= 'Z'; i++) {
-            [_dataSource addObject:[NSString stringWithFormat:@"%c",i]];
+            [_dataSourceLetters addObject:[NSString stringWithFormat:@"%c",i]];
         }
     }
-    return _dataSource;
+    return _dataSourceLetters;
 }
 
 - (void)didReceiveMemoryWarning
@@ -70,18 +86,93 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    LetterGroupViewController *lgvc = [[LetterGroupViewController alloc] init];
-    DataManager *manger = [DataManager sharedManager];
-    NSMutableDictionary *marvelDict = manger.marvelDict;
-    char selectedChar = 'A' + indexPath.row;
-    NSString *selectedCharString = [NSString stringWithFormat:@"%c",selectedChar];
-    NSMutableDictionary *letter_hero = [marvelDict objectForKey:selectedCharString];
-    NSMutableArray *heroKeys = letter_hero.allKeys.mutableCopy;
-    [heroKeys sortUsingSelector:@selector(compare:)];
-    //NSLog(@"%@", letter_hero[heroKeys[0]]);
-    [lgvc setDataSource:heroKeys];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if (cell.textLabel.text.length == 1) {
+        LetterGroupViewController *lgvc = [[LetterGroupViewController alloc] init];
+        DataManager *manger = [DataManager sharedManager];
+        NSMutableDictionary *marvelDict = manger.marvelDict;
+        char selectedChar = 'A' + indexPath.row;
+        NSString *selectedCharString = [NSString stringWithFormat:@"%c",selectedChar];
+        NSMutableDictionary *letter_hero = [marvelDict objectForKey:selectedCharString];
+        NSMutableArray *heroKeys = letter_hero.allKeys.mutableCopy;
+        [heroKeys sortUsingSelector:@selector(compare:)];
+        [lgvc setDataSource:heroKeys];
+        [lgvc setTitle:selectedCharString];
+        [self.navigationController pushViewController:lgvc animated:YES];
+        
+    } else if(cell.textLabel.text.length > 1) {
+        HeroSubcatViewController *hsc = [[HeroSubcatViewController alloc] init];
+        char firstChar = [cell.textLabel.text characterAtIndex:0];
+        NSString *selectedCharString = [NSString stringWithFormat:@"%c", firstChar];
+        DataManager *manager = [DataManager sharedManager];
+        NSMutableDictionary *letter_hero = [manager.marvelDict objectForKey:selectedCharString.uppercaseString];
+        NSString *name = cell.textLabel.text;
+        NSMutableArray *universes = letter_hero[name];
+        [hsc setDataSource:universes];
+        [hsc setTitle:name];
+        [self.navigationController pushViewController:hsc animated:YES];
+    }
     
-    [self.navigationController pushViewController:lgvc animated:YES];
+}
+
+#pragma mark SearchBar
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
+{
+    [self searchBar:searchBar textDidChange:searchBar.text];
+}
+
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
+{
+    if ([searchBar.text length]) {
+        
+    } else {
+        self.dataSource = self.dataSourceLetters;
+        [self.tvCharacters reloadData];
+    }
+}
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    if ([searchText length]) {
+        char firstChar = [searchText characterAtIndex:0];
+        NSString *selectedCharString = [NSString stringWithFormat:@"%c", firstChar];
+        DataManager *manager = [DataManager sharedManager];
+        NSMutableDictionary *letter_hero = [manager.marvelDict objectForKey:selectedCharString.uppercaseString];
+        NSMutableArray *heroKeys = letter_hero.allKeys.mutableCopy;
+        NSMutableArray *sorted = [heroKeys filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF like[c] %@",[searchText stringByAppendingString:@"*"]]].mutableCopy;
+        [sorted sortUsingSelector:@selector(compare:)];
+        self.dataSource = sorted;
+    } else {
+        self.dataSource = self.dataSourceLetters;
+    }
+    [self.tvCharacters reloadData];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [self.view endEditing:YES];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar
+{
+    [self.view endEditing:YES];
+    self.dataSource = self.dataSourceLetters;
+    [self.tvCharacters reloadData];
+}
+
+- (void)keyboardShown:(NSNotification *)note
+{
+    NSDictionary *userInfo = [note valueForKey:@"userInfo"];
+    NSValue *value = userInfo[UIKeyboardFrameEndUserInfoKey];
+    CGRect frame = value.CGRectValue;
+    frame = [[[UIApplication sharedApplication] keyWindow] convertRect:frame toView:self.view];
+    [self.tvCharacters setFrame:CGRectMake(0, self.tvCharacters.frame.origin.y, self.view.bounds.size.width, frame.origin.y -self.searchBar.frame.size.height)];
+    [self.tvCharacters reloadData];
+}
+
+- (void)keyboardHidden:(NSNotification *)note
+{
+    [self.tvCharacters setFrame:CGRectMake(0, self.tvCharacters.frame.origin.y, self.view.bounds.size.width, self.view.bounds.size.height - self.searchBar.frame.size.height)];
 }
 
 @end
