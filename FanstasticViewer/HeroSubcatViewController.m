@@ -29,30 +29,22 @@
 {
     [super viewDidLoad];
 
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
     return [self.dataSource count];
 }
 
@@ -112,22 +104,17 @@
 
 #pragma mark - Table view delegate
 
-// In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here, for example:
-    // Create the next view controller.
     UIViewController *webVC = [[UIViewController alloc] init];
     UIWebView *webview = [[UIWebView alloc] initWithFrame:webVC.view.bounds];
     NSDictionary *detail_url = [self.dataSource objectAtIndex:indexPath.row];
     NSString *chosenURL = detail_url.allValues.lastObject;
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",baseURL,chosenURL]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",marvelURL,chosenURL]];
     NSURLRequest *heroRequest = [NSURLRequest requestWithURL:url];
     [webview loadRequest:heroRequest];
     [webVC.view addSubview:webview];
-    // Pass the selected object to the new view controller.
-    
-    // Push the view controller.
+
     [self.navigationController pushViewController:webVC animated:YES];
 }
 
