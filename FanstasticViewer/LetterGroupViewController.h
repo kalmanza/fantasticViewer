@@ -10,6 +10,6 @@
 
 @interface LetterGroupViewController : UITableViewController
 
-@property(nonatomic, strong) NSMutableArray *dataSource;
+@property(nonatomic, strong) NSArray *dataSource;
 
 @end

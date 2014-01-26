@@ -8,14 +8,21 @@
 
 #import <Foundation/Foundation.h>
 
-#define baseURL @"http://marvel.wikia.com"
+
 
 @interface DataManager : NSObject
 
-@property(nonatomic, strong) NSMutableDictionary *marvelDict;
+extern NSString *const marvelURL;
 
+//access shared instance
 + (DataManager *)sharedManager;
-- (void)fetchDataFromWiki;
-- (void)saveData;
+
+
+//access the entire marvel dictionary
+- (NSDictionary *)marvelDict;
+
+
+//call to populate marvel dictionary with data
+- (void)load;
 
 @end

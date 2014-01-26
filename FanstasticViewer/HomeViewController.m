@@ -13,8 +13,8 @@
 
 @interface HomeViewController () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
-@property(nonatomic, strong)NSMutableArray *dataSourceLetters;
-@property(nonatomic, strong)NSMutableArray *dataSource;
+@property(nonatomic, strong)NSArray *dataSourceLetters;
+@property(nonatomic, strong)NSArray *dataSource;
 @property(nonatomic, strong)IBOutlet UITableView *tvCharacters;
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 
@@ -51,13 +51,14 @@
     [self searchBar:self.searchBar textDidChange:self.searchBar.text];
 }
 
-- (NSMutableArray *)dataSourceLetters
+- (NSArray *)dataSourceLetters
 {
     if (!_dataSourceLetters) {
-        _dataSourceLetters = [[NSMutableArray alloc] init];
+        NSMutableArray *mutableLetters = [[NSMutableArray alloc] init];
         for (char i = 'A'; i <= 'Z'; i++) {
-            [_dataSourceLetters addObject:[NSString stringWithFormat:@"%c",i]];
+            [mutableLetters addObject:[NSString stringWithFormat:@"%c",i]];
         }
+        _dataSourceLetters = mutableLetters;
     }
     return _dataSourceLetters;
 }
@@ -90,12 +91,12 @@
     if (cell.textLabel.text.length == 1) {
         LetterGroupViewController *lgvc = [[LetterGroupViewController alloc] init];
         DataManager *manger = [DataManager sharedManager];
-        NSMutableDictionary *marvelDict = manger.marvelDict;
+        NSDictionary *marvelDict = manger.marvelDict;
         char selectedChar = 'A' + indexPath.row;
         NSString *selectedCharString = [NSString stringWithFormat:@"%c",selectedChar];
-        NSMutableDictionary *letter_hero = [marvelDict objectForKey:selectedCharString];
-        NSMutableArray *heroKeys = letter_hero.allKeys.mutableCopy;
-        [heroKeys sortUsingSelector:@selector(compare:)];
+        NSDictionary *letter_hero = [marvelDict objectForKey:selectedCharString];
+        NSArray *heroKeys = letter_hero.allKeys;
+        heroKeys = [heroKeys sortedArrayUsingSelector:@selector(compare:)];
         [lgvc setDataSource:heroKeys];
         [lgvc setTitle:selectedCharString];
         [self.navigationController pushViewController:lgvc animated:YES];
@@ -105,9 +106,9 @@
         char firstChar = [cell.textLabel.text characterAtIndex:0];
         NSString *selectedCharString = [NSString stringWithFormat:@"%c", firstChar];
         DataManager *manager = [DataManager sharedManager];
-        NSMutableDictionary *letter_hero = [manager.marvelDict objectForKey:selectedCharString.uppercaseString];
+        NSDictionary *letter_hero = [manager.marvelDict objectForKey:selectedCharString.uppercaseString];
         NSString *name = cell.textLabel.text;
-        NSMutableArray *universes = letter_hero[name];
+        NSArray *universes = letter_hero[name];
         [hsc setDataSource:universes];
         [hsc setTitle:name];
         [self.navigationController pushViewController:hsc animated:YES];
@@ -137,10 +138,10 @@
         char firstChar = [searchText characterAtIndex:0];
         NSString *selectedCharString = [NSString stringWithFormat:@"%c", firstChar];
         DataManager *manager = [DataManager sharedManager];
-        NSMutableDictionary *letter_hero = [manager.marvelDict objectForKey:selectedCharString.uppercaseString];
-        NSMutableArray *heroKeys = letter_hero.allKeys.mutableCopy;
-        NSMutableArray *sorted = [heroKeys filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF like[c] %@",[searchText stringByAppendingString:@"*"]]].mutableCopy;
-        [sorted sortUsingSelector:@selector(compare:)];
+        NSDictionary *letter_hero = [manager.marvelDict objectForKey:selectedCharString.uppercaseString];
+        NSArray *heroKeys = letter_hero.allKeys;
+        NSArray *sorted = [heroKeys filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF like[c] %@",[searchText stringByAppendingString:@"*"]]];
+        sorted = [sorted sortedArrayUsingSelector:@selector(compare:)];
         self.dataSource = sorted;
     } else {
         self.dataSource = self.dataSourceLetters;

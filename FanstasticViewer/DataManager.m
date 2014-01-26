@@ -8,7 +8,12 @@
 
 #import "DataManager.h"
 
+NSString *const marvelURL = @"http://marvel.wikia.com";
+
 @interface DataManager ()
+{
+    NSMutableDictionary *_marvelDict;
+}
 
 @end
 
@@ -35,7 +40,12 @@
     return sharedManager;
 }
 
-- (NSMutableDictionary *)marvelDict
+- (NSDictionary *)marvelDict
+{
+        return _marvelDict;
+}
+
+- (void)load
 {
     NSArray *urls = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
     if (!urls) {
@@ -50,16 +60,14 @@
             [self fetchDataFromWiki];
         }
     }
-    return _marvelDict;
 }
 
 - (void)fetchDataFromWiki
 {
-   // [self parseEntry:@{@"title":@"toast (something else here) (earth-616)"}];
     static NSString *offset = @"0";
     static BOOL finishedDownload = NO;
     finishedDownload = NO;
-    NSString *apiurl = [NSString stringWithFormat:@"http://marvel.wikia.com/api/v1/Articles/List?expand=1&category=characters&limit=8000&offset=%@",offset];
+    NSString *apiurl = [NSString stringWithFormat:@"http://marvel.wikia.com/api/v1/Articles/List?expand=1&category=characters&limit=5000&offset=%@",offset];
     apiurl = [apiurl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURLSessionConfiguration *ephemeralConfig = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     NSURLSession *emphemeralSession = [NSURLSession sessionWithConfiguration:ephemeralConfig];
@@ -71,7 +79,6 @@
         }
         NSError *jsonError;
         NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-      //  NSLog(@"%@", responseDict);
         if ([responseDict objectForKey:@"exception"]) {
             return;
         }
@@ -122,10 +129,10 @@
     NSString *heroURL = tokens[@"url"];
     NSDictionary *details_url = @{heroDetails:heroURL};
     NSMutableArray *heroNameArray;
-    NSMutableDictionary *letterValue = [self.marvelDict objectForKey:[NSString stringWithFormat:@"%c",[heroName characterAtIndex:0]]];
+    NSMutableDictionary *letterValue = [_marvelDict objectForKey:[NSString stringWithFormat:@"%c",[heroName characterAtIndex:0]]];
     if (!letterValue) {
-        [self.marvelDict setObject:[[NSMutableDictionary alloc] init] forKey:[NSString stringWithFormat:@"%c",[heroName characterAtIndex:0]]];
-        letterValue = [self.marvelDict objectForKey:[NSString stringWithFormat:@"%c",[heroName characterAtIndex:0]]];
+        [_marvelDict setObject:[[NSMutableDictionary alloc] init] forKey:[NSString stringWithFormat:@"%c",[heroName characterAtIndex:0]]];
+        letterValue = [_marvelDict objectForKey:[NSString stringWithFormat:@"%c",[heroName characterAtIndex:0]]];
         heroNameArray = [letterValue objectForKey:heroName];
         if (!heroNameArray) {
             [letterValue setObject:[[NSMutableArray alloc]init] forKey:heroName];
@@ -155,7 +162,7 @@
     }
     NSURL *docsDirectory = [urls lastObject];
     NSURL *marvelDictURL = [docsDirectory URLByAppendingPathComponent:@"marvelDict.archive"];
-    [NSKeyedArchiver archiveRootObject:self.marvelDict toFile:marvelDictURL.path];
+    [NSKeyedArchiver archiveRootObject:_marvelDict toFile:marvelDictURL.path];
     
 }
 
