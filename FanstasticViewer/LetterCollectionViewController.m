@@ -38,6 +38,7 @@
     [_collectionView setCollectionViewLayout:flowLayout];
     [_collectionView setBackgroundColor:[UIColor darkGrayColor]];
     [_collectionView setContentInset:UIEdgeInsetsMake(20, 40, 20, 40)];
+    [self setTitle:@"Browse"];
 }
 
 - (void)didReceiveMemoryWarning
