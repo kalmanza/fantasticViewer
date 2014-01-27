@@ -45,6 +45,34 @@ NSString *const marvelURL = @"http://marvel.wikia.com";
         return _marvelDict;
 }
 
+-(NSArray *)heroNamesWithPrefix:(NSString *)prefix
+{
+    if (![prefix length]) {
+        NSLog(@"%@ recieved %@", NSStringFromSelector(_cmd) ,prefix);
+        return nil;
+    }
+    NSString *firstChar = [[prefix substringToIndex:1] uppercaseString];
+    NSDictionary *hero_subcat = _marvelDict[firstChar];
+    NSArray *returnArray;
+    if ([prefix length] < 2) {
+        returnArray = [hero_subcat allKeys];
+    } else {
+        returnArray = [[hero_subcat allKeys] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF like[c] %@",[prefix stringByAppendingString:@"*"]]];
+    }
+    return [returnArray sortedArrayUsingSelector:@selector(compare:)];
+}
+
+- (NSArray *)universesForHeroName:(NSString *)name
+{
+    if (![name length]) {
+        NSLog(@"%@ recieved %@", NSStringFromSelector(_cmd) ,name);
+        return nil;
+    }
+    NSString *firstChar = [[name substringToIndex:1] uppercaseString];
+    NSDictionary *hero_subcat = _marvelDict[firstChar];
+    return hero_subcat[name];
+}
+
 - (void)load
 {
     NSArray *urls = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
@@ -95,7 +123,7 @@ NSString *const marvelURL = @"http://marvel.wikia.com";
             finishedDownload = YES;
             return;
         }
-        [self fetchDataFromWiki];
+        [[NSRunLoop mainRunLoop] addTimer:[NSTimer timerWithTimeInterval:2.0 target:self selector:@selector(fetchDataFromWiki) userInfo:nil repeats:NO] forMode:NSDefaultRunLoopMode];
         
     }] resume];
 }
@@ -151,7 +179,6 @@ NSString *const marvelURL = @"http://marvel.wikia.com";
         }
 
     }
-    
 }
 
 - (void)saveData

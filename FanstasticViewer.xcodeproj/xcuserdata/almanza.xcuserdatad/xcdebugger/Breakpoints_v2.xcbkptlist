@@ -21,11 +21,11 @@
             condition = "stringName = nil"
             continueAfterRunningActions = "No"
             filePath = "FanstasticViewer/DataManager.m"
-            timestampString = "412467497.231461"
+            timestampString = "412479091.437183"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
+            startingLineNumber = "133"
+            endingLineNumber = "133"
             landmarkName = "-parseEntry:"
             landmarkType = "5">
          </BreakpointContent>
@@ -37,11 +37,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FanstasticViewer/DataManager.m"
-            timestampString = "412467497.231461"
+            timestampString = "412479091.437183"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "87"
-            endingLineNumber = "87"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
             landmarkName = "-fetchDataFromWiki"
             landmarkType = "5">
          </BreakpointContent>
@@ -53,11 +53,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FanstasticViewer/DataManager.m"
-            timestampString = "412467497.231461"
+            timestampString = "412479091.437183"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "90"
-            endingLineNumber = "90"
+            startingLineNumber = "118"
+            endingLineNumber = "118"
             landmarkName = "-fetchDataFromWiki"
             landmarkType = "5">
          </BreakpointContent>
@@ -69,11 +69,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FanstasticViewer/DataManager.m"
-            timestampString = "412467497.231461"
+            timestampString = "412479091.437183"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "88"
-            endingLineNumber = "88"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
             landmarkName = "-fetchDataFromWiki"
             landmarkType = "5">
          </BreakpointContent>
@@ -85,12 +85,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FanstasticViewer/DataManager.m"
-            timestampString = "412467497.231461"
+            timestampString = "412479091.437183"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
             landmarkName = "-fetchDataFromWiki"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FanstasticViewer/DataManager.m"
+            timestampString = "412478164.80619"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "50"
+            endingLineNumber = "50"
+            landmarkName = "-heroNamesWithPrefix:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -45,7 +45,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.dataSource count];
+    return [_dataSource count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -56,7 +56,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    NSDictionary *subcat = self.dataSource[indexPath.row];
+    NSDictionary *subcat = _dataSource[indexPath.row];
     [cell.textLabel setText:subcat.allKeys.lastObject];
     
     return cell;
@@ -108,7 +108,7 @@
 {
     UIViewController *webVC = [[UIViewController alloc] init];
     UIWebView *webview = [[UIWebView alloc] initWithFrame:webVC.view.bounds];
-    NSDictionary *detail_url = [self.dataSource objectAtIndex:indexPath.row];
+    NSDictionary *detail_url = [_dataSource objectAtIndex:indexPath.row];
     NSString *chosenURL = detail_url.allValues.lastObject;
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",marvelURL,chosenURL]];
     NSURLRequest *heroRequest = [NSURLRequest requestWithURL:url];

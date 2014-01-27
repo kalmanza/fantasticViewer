@@ -53,7 +53,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return self.dataSource.count;
+    return _dataSource.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -64,7 +64,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
-    NSString *entry = [self.dataSource objectAtIndex:indexPath.row];
+    NSString *entry = [_dataSource objectAtIndex:indexPath.row];
     [cell.textLabel setText:entry];
     
     return cell;
@@ -114,14 +114,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HeroSubcatViewController *detailViewController = [[HeroSubcatViewController alloc] init];
-    NSString *name = [self.dataSource objectAtIndex:indexPath.row];
-    NSDictionary *heros = [[[DataManager sharedManager] marvelDict] objectForKey:[NSString stringWithFormat:@"%c",[name characterAtIndex:0]]];
-    NSArray *subcategories = [heros objectForKey:name];
-    [detailViewController setDataSource:subcategories];
-    [detailViewController setTitle:name];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    HeroSubcatViewController *hsc = [[HeroSubcatViewController alloc] init];
+    NSString *heroName = cell.textLabel.text;
+    [hsc setDataSource:[[DataManager sharedManager] universesForHeroName:heroName]];
+    [hsc setTitle:heroName];
     
-    [self.navigationController pushViewController:detailViewController animated:YES];
+    [self.navigationController pushViewController:hsc animated:YES];
 }
 
 

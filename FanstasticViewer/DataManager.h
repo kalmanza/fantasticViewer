@@ -25,4 +25,10 @@ extern NSString *const marvelURL;
 //call to populate marvel dictionary with data
 - (void)load;
 
+//get a list of hero names starting with a letter
+-(NSArray *)heroNamesWithPrefix:(NSString *)prefix;
+
+//get a list of all the universes a hero has appeared in
+- (NSArray *)universesForHeroName:(NSString *)name;
+
 @end
