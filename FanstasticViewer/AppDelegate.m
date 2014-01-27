@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "HomeViewController.h"
+#import "LetterCollectionViewController.h"
 #import "DataManager.h"
 
 @implementation AppDelegate
@@ -18,8 +19,8 @@
         [[DataManager sharedManager] load];
     });
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    HomeViewController *hvc = [[HomeViewController alloc] init];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:hvc];
+    LetterCollectionViewController *lcvc = [[LetterCollectionViewController alloc] init];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:lcvc];
     [self.window setRootViewController:navController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
