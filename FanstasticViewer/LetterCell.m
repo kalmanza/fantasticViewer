@@ -22,6 +22,7 @@
         [self.layer setShadowOpacity:1.0];
         [self.layer setShadowColor:[UIColor blackColor].CGColor];
         [self.layer setShadowRadius:0.5];
+        [self.layer setCornerRadius:5.0];
     }
     return self;
 }

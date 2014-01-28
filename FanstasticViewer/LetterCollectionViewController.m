@@ -11,13 +11,22 @@
 #import "LetterGroupViewController.h"
 #import "DataManager.h"
 
+typedef NS_ENUM(NSInteger, FVSelectionState) {
+    FVSelectionStateLetters,
+    FVSelectionStateCharacters,
+    FVSelectionStateUniverses
+};
+
 @interface LetterCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 {
-    NSArray *_dataSource;
+    NSArray *_mainDataSource;
+    BOOL _inTransition;
 }
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (nonatomic, strong) UICollectionViewFlowLayout *herosLayout;
+@property (nonatomic, strong) UICollectionViewFlowLayout *letterLayout;
 @property (nonatomic, strong) NSArray *dataSourceLetters;
+@property (nonatomic) FVSelectionState state;
 
 @end
 
@@ -27,7 +36,9 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        _dataSource = self.dataSourceLetters;
+        _mainDataSource = self.dataSourceLetters;
+        _inTransition = NO;
+        [self addObserver:self forKeyPath:@"state" options:NSKeyValueObservingOptionNew context:nil];
     }
     return self;
 }
@@ -36,15 +47,76 @@
 {
     [super viewDidLoad];
     [self setupHeroLayout];
-    [_collectionView registerClass:[LetterCell class] forCellWithReuseIdentifier:@"reuse"];
-    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-    [flowLayout setMinimumInteritemSpacing:10.0];
-    [flowLayout setMinimumLineSpacing:30.0];
-    [flowLayout setItemSize:CGSizeMake(100, 100)];
-    [_collectionView setCollectionViewLayout:flowLayout];
-    [_collectionView setBackgroundColor:[UIColor darkGrayColor]];
-    [_collectionView setContentInset:UIEdgeInsetsMake(20, 40, 20, 40)];
-    [self setTitle:@"Browse"];
+    [self setupLetterLayout];
+    [self setupCollectionView];
+    [self setupNavBar];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"state"]) {
+        [self updateForNewState];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+- (void)updateForNewState
+{
+    UIBarButtonItem *leftItem = [UIBarButtonItem alloc];
+    switch (_state) {
+        case FVSelectionStateLetters:
+        {
+            leftItem = [leftItem initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(backButtonPressed)];
+            break;
+        }
+        case FVSelectionStateCharacters:
+        {
+            leftItem = [leftItem initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(backButtonPressed)];
+            break;
+        }
+        case FVSelectionStateUniverses:
+        {
+            leftItem = [leftItem initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(backButtonPressed)];
+            break;
+        }
+    }
+    [self.navigationItem setLeftBarButtonItem:leftItem];
+}
+
+- (void)backButtonPressed
+{
+    switch (_state) {
+        case FVSelectionStateLetters:
+        {
+            break;
+        }
+        case FVSelectionStateCharacters:
+        {
+            @try {
+                _mainDataSource = self.dataSourceLetters;
+                _inTransition = YES;
+                [_collectionView reloadData];
+                [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+                [_collectionView setCollectionViewLayout:_letterLayout animated:YES completion:^(BOOL finished) {
+                    if (finished) {
+                        [self setState:FVSelectionStateLetters];
+                        _inTransition = NO;
+                    }
+                }];
+            }
+            @catch (NSException *exception) {
+                NSLog(@"%@", exception.description);
+            }
+            @finally {
+            }
+            break;
+        }
+        case FVSelectionStateUniverses:
+        {
+            break;
+        }
+    }
 }
 
 - (NSArray *)dataSourceLetters
@@ -59,34 +131,59 @@
     return _dataSourceLetters;
 }
 
+- (void)setupNavBar
+{
+    [self setTitle:@"Browse"];
+    self.state = FVSelectionStateLetters;
+}
 
 - (void)setupHeroLayout
 {
     _herosLayout = [[UICollectionViewFlowLayout alloc] init];
-    [_herosLayout setMinimumInteritemSpacing:0];
+    [_herosLayout setMinimumInteritemSpacing:0.0];
     [_herosLayout setMinimumLineSpacing:30.0];
     [_herosLayout setItemSize:CGSizeMake(240, 100)];
+}
+
+- (void)setupLetterLayout
+{
+    _letterLayout = [[UICollectionViewFlowLayout alloc] init];
+    [_letterLayout setMinimumInteritemSpacing:10.0];
+    [_letterLayout setMinimumLineSpacing:30.0];
+    [_letterLayout setItemSize:CGSizeMake(100, 100)];
+}
+
+- (void)setupCollectionView
+{
+    [_collectionView registerClass:[LetterCell class] forCellWithReuseIdentifier:@"reuse"];
+    [_collectionView setCollectionViewLayout:_letterLayout];
+    [_collectionView setBackgroundColor:[UIColor darkGrayColor]];
+    [_collectionView setContentInset:UIEdgeInsetsMake(20, 40, 20, 40)];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return [_dataSource count];
+    return [_mainDataSource count];
 }
 
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     LetterCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"reuse" forIndexPath:indexPath];
-    [cell.textLabel setText:_dataSource[indexPath.row]];
+    [cell.textLabel setText:_mainDataSource[indexPath.row]];
     [cell.textLabel setTextColor:[UIColor whiteColor]];
     [cell.textLabel setFont:[UIFont systemFontOfSize:22]];
-    [cell.layer setCornerRadius:5.0];
+    if (_inTransition) {
+        [cell.textLabel setAlpha:0.0];
+        [UIView animateWithDuration:.8 animations:^{
+            cell.textLabel.alpha = 1;
+        }];
+    }
     return cell;
 }
 
@@ -100,19 +197,31 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     LetterCell *cell = (LetterCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    NSArray *heroNames = [[DataManager sharedManager] heroNamesWithPrefix:cell.textLabel.text];
-    _dataSource = heroNames;
-    [_collectionView setCollectionViewLayout:_herosLayout animated:YES completion:^(BOOL finished) {
-        if (finished) {
+    switch (_state) {
+        case FVSelectionStateLetters:
+        {
+            NSArray *heroNames = [[DataManager sharedManager] heroNamesWithPrefix:cell.textLabel.text];
+            _mainDataSource = heroNames;
+            _inTransition = YES;
             [_collectionView reloadData];
+            [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+            [_collectionView setCollectionViewLayout:_herosLayout animated:YES completion:^(BOOL finished) {
+                if (finished) {
+                    self.state = FVSelectionStateCharacters;
+                    _inTransition = NO;
+                }
+            }];
+            break;
         }
-    }];
-    /*
-    CharacterCollectionViewController *ccvc = [[CharacterCollectionViewController alloc] init];
-    [ccvc setDataSource:heroNames];
-    [ccvc setTitle:cell.textLabel.text];
-    [self.navigationController pushViewController:ccvc animated:YES];
-     */
+        case FVSelectionStateCharacters:
+        {
+            break;
+        }
+        case FVSelectionStateUniverses:
+        {
+            break;
+        }
+    }
 }
 /*
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -141,5 +250,10 @@
 }
  
  */
+
+- (void)dealloc
+{
+    [self removeObserver:self forKeyPath:@"state"];
+}
 
 @end
