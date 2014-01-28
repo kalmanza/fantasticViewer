@@ -18,8 +18,19 @@
         [_textLabel setTextAlignment:NSTextAlignmentCenter];
         [self setBackgroundColor:[UIColor grayColor]];
         [self addSubview:_textLabel];
+        [self.layer setShadowOffset:CGSizeMake(0, 2)];
+        [self.layer setShadowOpacity:1.0];
+        [self.layer setShadowColor:[UIColor blackColor].CGColor];
+        [self.layer setShadowRadius:0.5];
     }
     return self;
+}
+
+- (void)layoutSubviews
+{
+    [_textLabel setFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
+    [_textLabel setNumberOfLines:2];
+    [_textLabel setLineBreakMode:NSLineBreakByWordWrapping];
 }
 
 /*
